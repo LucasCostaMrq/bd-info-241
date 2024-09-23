@@ -1,13 +1,15 @@
 import mysql.connector
 
 connect = mysql.connector.connect(
-    user= "root",
+    user= "myuser",
     password= "mypassword",
     host= "localhost",
     database= "mydatabase"
 )
 
 cursor = connect.cursor()
+
+tabelas = ["TB_MATRICULA", "TB_ALUNO", "TB_PROFESSOR", "TB_DISCIPLINA"]
 
 cursor.execute(
     """
@@ -40,7 +42,7 @@ cursor.execute(
 
 cursor.execute(
     """
-        CREATE TABLE TB_MATRICULA(
+        CREATE TABLE IF NOT EXISTS TB_MATRICULA(
             id_matricula INT PRIMARY KEY AUTO_INCREMENT,
             id_aluno INT,
             id_prof INT,
@@ -56,6 +58,11 @@ cursor.execute(
 )
 
 connect.commit()
+
+for item in range(len(tabelas)):
+    cursor.execute(f"DELETE FROM {tabelas[item]};")
+    cursor.execute(f"ALTER TABLE {tabelas[item]} AUTO_INCREMENT = 1;")
+    connect.commit()
 
 cursor.execute(
     """
@@ -95,7 +102,7 @@ cursor.execute(
         INSERT INTO TB_MATRICULA(id_aluno, id_prof, id_disc, notaN1, notaN2, faltas) 
         VALUES (1, 1, 1, 6.0, 8.5, 8),
                (2, 2, 2, 6.0, 5.0, 9),
-               (3, 3, 3, 8.0, 7.0, 15),
+               (3, 3, 3, 8.0, 7.0, 15);
     """
 )
 
